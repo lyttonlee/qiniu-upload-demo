@@ -3,11 +3,10 @@
   <div class="upload">
     <el-upload
       class="avatar-uploader"
-      action="https://upload-z2.qiniup.com"
-      :data= token
+      :action= domain
+      :http-request = upqiniu
       :show-file-list="false"
-      :on-success="handleAvatarSuccess"
-      :before-upload="beforeAvatarUpload">
+      :before-upload="beforeUpload">
       <img v-if="imageUrl" :src="imageUrl" class="avatar">
       <i v-else class="el-icon-plus avatar-uploader-icon"></i>
     </el-upload>
@@ -18,24 +17,43 @@ export default {
   data () {
     return {
       imageUrl: '',
-      token: {}
+      token: {},
+      domain: 'https://upload-z2.qiniup.com',
+      qiniuaddr: 'p3z6q1uw1.bkt.clouddn.com'
     }
   },
   methods: {
-    handleAvatarSuccess (res, file) {
-      this.imageUrl = URL.createObjectURL(file.raw)
-    },
-    beforeAvatarUpload (file) {
-      const isJPG = file.type === 'image/jpeg'
-      const isLt2M = file.size / 1024 / 1024 < 2
+    upqiniu (req) {
+      console.log(req)
+      const config = {
+        headers: {'Content-Type': 'multipart/form-data'}
+      }
+      let filetype = ''
+      if (req.file.type === 'image/png') {
+        filetype = 'png'
+      } else {
+        filetype = 'jpg'
+      }
+      const keyname = 'lytton' + new Date() + Math.floor(Math.random() * 100) + '.' + filetype
+      // console.log(keyname)
       this.axios.get('/up/token').then(res => {
-        // console.log(res)
-        this.token = {
-          token: res.data
-        }
-        console.log(this.token)
+        console.log(res)
+        // this.token = res.data
+        const formdata = new FormData()
+        formdata.append('file', req.file)
+        formdata.append('token', res.data)
+        formdata.append('key', keyname)
+        // console.log(formdata)
+        this.axios.post(this.domain, formdata, config).then(res => {
+          // console.log(res)
+          this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
+          // console.log(this.imageUrl)
+        })
       })
-
+    },
+    beforeUpload (file) {
+      const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
       if (!isJPG) {
         this.$message.error('上传头像图片只能是 JPG 格式!')
       }

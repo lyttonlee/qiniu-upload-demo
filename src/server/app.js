@@ -12,7 +12,7 @@ app.get('/token', (req, res, next) => {
   // console.log(req.query)
   // const token = qnconfig.uptoken(buket, req.query.name)
   console.log(qnconfig.uploadToken)
-  res.status(200).json(qnconfig.uploadToken)
+  res.status(200).send(qnconfig.uploadToken)
 })
 // 监听3000端口
 app.listen(3000, () => {
