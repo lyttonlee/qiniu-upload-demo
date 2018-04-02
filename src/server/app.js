@@ -9,9 +9,7 @@ app.use(bodyparse.json())
 const qnconfig = require('./config.js')
 // 处理请求
 app.get('/token', (req, res, next) => {
-  // console.log(req.query)
-  // const token = qnconfig.uptoken(buket, req.query.name)
-  console.log(qnconfig.uploadToken)
+  // console.log(qnconfig.uploadToken)
   res.status(200).send(qnconfig.uploadToken)
 })
 // 监听3000端口

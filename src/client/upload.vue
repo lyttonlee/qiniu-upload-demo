@@ -17,12 +17,14 @@ export default {
   data () {
     return {
       imageUrl: '',
-      token: {},
+      // 七牛云的上传地址，根据自己所在地区选择，我这里是华南区
       domain: 'https://upload-z2.qiniup.com',
+      // 这是七牛云空间的外链默认域名
       qiniuaddr: 'p3z6q1uw1.bkt.clouddn.com'
     }
   },
   methods: {
+    // 上传文件到七牛云
     upqiniu (req) {
       console.log(req)
       const config = {
@@ -34,23 +36,23 @@ export default {
       } else {
         filetype = 'jpg'
       }
+      // 重命名要上传的文件
       const keyname = 'lytton' + new Date() + Math.floor(Math.random() * 100) + '.' + filetype
-      // console.log(keyname)
+      // 从后端获取上传凭证token
       this.axios.get('/up/token').then(res => {
         console.log(res)
-        // this.token = res.data
         const formdata = new FormData()
         formdata.append('file', req.file)
         formdata.append('token', res.data)
         formdata.append('key', keyname)
-        // console.log(formdata)
+        // 获取到凭证之后再将文件上传到七牛云空间
         this.axios.post(this.domain, formdata, config).then(res => {
-          // console.log(res)
           this.imageUrl = 'http://' + this.qiniuaddr + '/' + res.data.key
           // console.log(this.imageUrl)
         })
       })
     },
+    // 验证文件合法性
     beforeUpload (file) {
       const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
       const isLt2M = file.size / 1024 / 1024 < 2
