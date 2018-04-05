@@ -2,17 +2,27 @@
 
 > vue element-ui express 上传文件到七牛云的demo
 
-## Build Setup
+## 使用方法
 
 ``` bash
-# install dependencies
+# 克隆或者下载项目到本地
+git clone https://github.com/lyttonlee/qiniu-upload-demo
+
+# 安装前端依赖
+# 在根目录执行
 npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
+# 安装服务端依赖
+# 进入目录 src > server
+npm install
 
-# build for production with minification
-npm run build
+# 启动服务端
+node app.js
+# 在浏览器打开localhost:3000窗口，出现can not get 启动成功
+
+# 在根目录启动客户端
+npm run dev
+# 客户端会运行在localhost:8080
 
 # build for production and view the bundle analyzer report
 npm run build --report
